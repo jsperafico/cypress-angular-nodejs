@@ -1,0 +1,26 @@
+version: "3"
+services: 
+    task-tracker:
+        image: node:14-alpine
+        container_name: task-tracker
+        working_dir: /usr/app
+        command: /bin/sh -c "npm install && PORT=${TASK_TRACKER_PORT} npm run start"
+        volumes: 
+            - ./angular:/usr/app
+    legacy-backend:
+        image: node:14-alpine
+        container_name: legacy-backend
+        working_dir: /usr/app
+        command: /bin/sh -c "npm install && PORT=${BACKEND_PORT} npm run server"
+        volumes: 
+            - ./backend:/usr/app
+    proxy:
+        image: nginx
+        container_name: proxy
+        ports: 
+            - ${PROXY_PORT}:80
+        volumes: 
+            - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf
+
+    # backend-proxy-broker:
+    #     container_name: backend-proxy-broker

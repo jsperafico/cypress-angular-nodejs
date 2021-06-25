@@ -1,9 +1,13 @@
 {
   "name": "cypress",
   "version": "1.0.0",
-  "description": "",
+  "description": "Cypress documentation.",
   "scripts": {
+    "open": "npx cypress open"
   },
   "author": "Jonathan Pinto Sperafico",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^7.6.0"
+  }
 }

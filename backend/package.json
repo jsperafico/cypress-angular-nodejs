@@ -1,9 +1,9 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Legacy Backend",
   "scripts": {
-    "server": "json-server --watch db.json --port 5000"
+    "server": "json-server -H 0.0.0.0 --watch db.json --port ${PORT:-5000}"
   },
   "author": "Jonathan Pinto Sperafico",
   "license": "ISC",
