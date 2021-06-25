@@ -1,0 +1,13 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "server": "json-server --watch db.json --port 5000"
+  },
+  "author": "Jonathan Pinto Sperafico",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^0.16.3"
+  }
+}

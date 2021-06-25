@@ -1,0 +1,9 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+  },
+  "author": "Jonathan Pinto Sperafico",
+  "license": "ISC"
+}
