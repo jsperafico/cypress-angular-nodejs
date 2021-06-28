@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Cypress documentation.",
   "scripts": {
-    "open": "npx cypress open"
+    "open": "npx cypress open",
+    "task-tracker": "npx cypress run --headless --spec 'cypress/integration/task-tracker/**/*'"
   },
   "author": "Jonathan Pinto Sperafico",
   "license": "ISC",
