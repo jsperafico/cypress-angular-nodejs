@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Common Features being tested', () => {
-    beforeEach(() => cy.visit('http://localhost:8080/'));
+    beforeEach(() => cy.visit('/'));
 
     it('Home page opened', () => {
         cy.contains('Task Tracker');

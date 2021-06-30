@@ -2,7 +2,7 @@
 
 describe('Task lifecycle validateion', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:8080/');
+        cy.visit('/');
         cy.contains('Task Tracker');
 
         cy.get('app-button[ng-reflect-text=Add]').click();
