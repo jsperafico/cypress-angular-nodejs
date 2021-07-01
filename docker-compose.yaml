@@ -3,25 +3,53 @@ services:
     task-tracker:
         image: node:14-alpine
         container_name: task-tracker
+        logging: 
+            driver: splunk
+            options: 
+                splunk-token: "jt7xay4s-aikl-nyoz-36gukwzmt1r2xlj1"
+                splunk-url: "https://localhost:8088"
+                splunk-insecureskipverify: "true"
         working_dir: /usr/app
         command: /bin/sh -c "npm install && PORT=${TASK_TRACKER_PORT} npm run start"
         volumes: 
             - ./angular:/usr/app
             - angular:/usr/app/node_modules
+        depends_on: 
+            splunk:
+                condition: service_healthy
     legacy-backend:
         image: node:14-alpine
         container_name: legacy-backend
+        logging: 
+            driver: splunk
+            options: 
+                splunk-token: "56z7m2f9-vbw1-24de-eosu53mztzneuse2"
+                splunk-url: "https://localhost:8088"
+                splunk-insecureskipverify: "true"
         working_dir: /usr/app
         command: /bin/sh -c "npm install && PORT=${BACKEND_PORT} npm run server"
         volumes: 
             - ./backend:/usr/app
             - legacy:/usr/app/node_modules
+        depends_on: 
+            splunk:
+                condition: service_healthy
     proxy:
         image: nginx
         container_name: proxy
+        logging: 
+            driver: splunk
+            options: 
+                splunk-token: "53b73db1-c549-4dd6-a718-04b630c0e30e"
+                splunk-url: "https://localhost:8088"
+                splunk-insecureskipverify: "true"
         depends_on: 
-            - task-tracker
-            - backend-fallback
+            task-tracker:
+                condition: service_started
+            backend-fallback:
+                condition: service_started
+            splunk:
+                condition: service_healthy
         ports: 
             - ${PROXY_PORT}:80
         volumes: 
@@ -29,10 +57,41 @@ services:
     backend-fallback:
         image: nginx
         container_name: backend-fallback
+        logging: 
+            driver: splunk
+            options: 
+                splunk-token: "c1513900-cb73-4b1a-a7bd-546bb26aefc4"
+                splunk-url: "https://localhost:8088"
+                splunk-insecureskipverify: "true"
         depends_on: 
-            - legacy-backend
+            legacy-backend:
+                condition: service_started
+            splunk:
+                condition: service_healthy
         volumes: 
             - ./backend-fallback/nginx.conf:/etc/nginx/conf.d/default.conf
+    splunk:
+        image: splunk/splunk
+        container_name: splunk
+        hostname: splunk
+        environment: 
+            - SPLUNK_PASSWORD=Test1234
+            - SPLUNK_START_ARGS=--accept-license
+            - SPLUNK_ROOT_ENDPOINT=/splunk
+            - SPLUNK_APPS_URL=https://splunkbase.splunk.com/app/3258/release/3.0.0/download
+            - SPLUNKBASE_USERNAME=${SPLUNKBASE_USERNAME}
+            - SPLUNKBASE_PASSWORD=${SPLUNKBASE_PASSWORD}
+            - SPLUNK_NGINX_TOKEN=${SPLUNK_NGINX_TOKEN}
+            - SPLUNK_BACKEND_FALLBACK_TOKEN=${SPLUNK_BACKEND_FALLBACK_TOKEN}
+        volumes:
+            - ./splunk/httpinput/local:/opt/splunk/etc/apps/splunk_httpinput/local
+        ports: 
+            - 8088:8088
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8000"]
+            interval: 30s
+            timeout: 10s
+            retries: 10
 volumes: 
     angular:
     legacy:
