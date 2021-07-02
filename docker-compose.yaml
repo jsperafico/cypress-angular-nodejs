@@ -9,6 +9,7 @@ services:
                 splunk-token: "jt7xay4s-aikl-nyoz-36gukwzmt1r2xlj1"
                 splunk-url: "https://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-index: task-tracker
         working_dir: /usr/app
         command: /bin/sh -c "npm install && PORT=${TASK_TRACKER_PORT} npm run start"
         volumes: 
@@ -26,6 +27,7 @@ services:
                 splunk-token: "56z7m2f9-vbw1-24de-eosu53mztzneuse2"
                 splunk-url: "https://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-index: legacy-backend
         working_dir: /usr/app
         command: /bin/sh -c "npm install && PORT=${BACKEND_PORT} npm run server"
         volumes: 
@@ -43,6 +45,9 @@ services:
                 splunk-token: "53b73db1-c549-4dd6-a718-04b630c0e30e"
                 splunk-url: "https://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-index: proxy
+                tag: proxy
+                labels: "type,location"
         depends_on: 
             task-tracker:
                 condition: service_started
@@ -63,6 +68,9 @@ services:
                 splunk-token: "c1513900-cb73-4b1a-a7bd-546bb26aefc4"
                 splunk-url: "https://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-index: proxy
+                tag: fallback
+                labels: "type,location"
         depends_on: 
             legacy-backend:
                 condition: service_started
@@ -73,7 +81,6 @@ services:
     splunk:
         image: splunk/splunk
         container_name: splunk
-        hostname: splunk
         environment: 
             - SPLUNK_PASSWORD=Test1234
             - SPLUNK_START_ARGS=--accept-license
@@ -85,6 +92,7 @@ services:
             - SPLUNK_BACKEND_FALLBACK_TOKEN=${SPLUNK_BACKEND_FALLBACK_TOKEN}
         volumes:
             - ./splunk/httpinput/local:/opt/splunk/etc/apps/splunk_httpinput/local
+            - ./splunk/search/local:/opt/splunk/etc/apps/search/local
         ports: 
             - 8088:8088
         healthcheck:
