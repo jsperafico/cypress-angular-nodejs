@@ -36,29 +36,6 @@ services:
         depends_on: 
             splunk:
                 condition: service_healthy
-    proxy:
-        image: nginx
-        container_name: proxy
-        logging: 
-            driver: splunk
-            options: 
-                splunk-token: "53b73db1-c549-4dd6-a718-04b630c0e30e"
-                splunk-url: "https://localhost:8088"
-                splunk-insecureskipverify: "true"
-                splunk-index: proxy
-                tag: proxy
-                labels: "type,location"
-        depends_on: 
-            task-tracker:
-                condition: service_started
-            backend-fallback:
-                condition: service_started
-            splunk:
-                condition: service_healthy
-        ports: 
-            - ${PROXY_PORT}:80
-        volumes: 
-            - ./proxy/nginx.conf:/etc/nginx/conf.d/default.conf
     backend-fallback:
         image: nginx
         container_name: backend-fallback
@@ -70,14 +47,39 @@ services:
                 splunk-insecureskipverify: "true"
                 splunk-index: proxy
                 tag: fallback
-                labels: "type,location"
         depends_on: 
             legacy-backend:
                 condition: service_started
             splunk:
                 condition: service_healthy
         volumes: 
-            - ./backend-fallback/nginx.conf:/etc/nginx/conf.d/default.conf
+            - ./backend-fallback/nginx.conf:/etc/nginx/nginx.conf
+            - ./backend-fallback/conf.d/nginx.conf:/etc/nginx/conf.d/default.conf
+            - logs-fallback:/var/log/nginx
+    proxy:
+        image: nginx
+        container_name: proxy
+        logging: 
+            driver: splunk
+            options: 
+                splunk-token: "53b73db1-c549-4dd6-a718-04b630c0e30e"
+                splunk-url: "https://localhost:8088"
+                splunk-insecureskipverify: "true"
+                splunk-index: proxy
+                tag: proxy
+        depends_on: 
+            task-tracker:
+                condition: service_started
+            backend-fallback:
+                condition: service_started
+            splunk:
+                condition: service_healthy
+        ports: 
+            - ${PROXY_PORT}:80
+        volumes: 
+            - ./proxy/nginx.conf:/etc/nginx/nginx.conf
+            - ./proxy/conf.d/nginx.conf:/etc/nginx/conf.d/default.conf
+            - logs-proxy:/var/log/nginx
     splunk:
         image: splunk/splunk
         container_name: splunk
@@ -93,6 +95,8 @@ services:
         volumes:
             - ./splunk/httpinput/local:/opt/splunk/etc/apps/splunk_httpinput/local
             - ./splunk/search/local:/opt/splunk/etc/apps/search/local
+            - logs-proxy:/mnt/logs/proxy
+            - logs-fallback:/mnt/logs/fallback
         ports: 
             - 8088:8088
         healthcheck:
@@ -103,3 +107,5 @@ services:
 volumes: 
     angular:
     legacy:
+    logs-proxy:
+    logs-fallback:

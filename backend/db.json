@@ -15,20 +15,14 @@
     {
       "text": "Go Shopping",
       "day": "July 1st at 2:00pm",
-      "reminder": false,
+      "reminder": true,
       "id": 75
     },
     {
-      "text": "Go Shopping",
-      "day": "July 1st at 2:00pm",
+      "text": "Asda",
+      "day": "asd",
       "reminder": true,
-      "id": 46
-    },
-    {
-      "text": "Go Shopping",
-      "day": "July 1st at 2:00pm",
-      "reminder": false,
-      "id": 37
+      "id": 66
     }
   ]
 }
