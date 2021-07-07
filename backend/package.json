@@ -6,7 +6,7 @@
     "server": "json-server -H 0.0.0.0 --watch db.json --port ${PORT:-5000}"
   },
   "author": "Jonathan Pinto Sperafico",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "dependencies": {
     "json-server": "^0.16.3"
   }

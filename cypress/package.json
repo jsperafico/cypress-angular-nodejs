@@ -7,7 +7,7 @@
     "task-tracker": "npx cypress run --headless --spec 'cypress/integration/task-tracker/**/*'"
   },
   "author": "Jonathan Pinto Sperafico",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "dependencies": {
     "cypress": "^7.6.0"
   }
