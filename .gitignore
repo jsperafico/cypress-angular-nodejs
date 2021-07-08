@@ -49,3 +49,5 @@ package-lock.json
 **/videos
 **/screenshots
 .env
+
+.stryker-tmp

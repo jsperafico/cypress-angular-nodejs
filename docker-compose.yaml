@@ -18,6 +18,35 @@ services:
         depends_on: 
             splunk:
                 condition: service_healthy
+    new-backend:
+        image: node:14-alpine
+        container_name: new-backend
+        logging: 
+            driver: splunk
+            options: 
+                splunk-token: "a5h7930q-vbw1-24de-eosu53mztzneuse3"
+                splunk-url: "https://localhost:8088"
+                splunk-insecureskipverify: "true"
+                splunk-index: backend
+        working_dir: /usr/app
+        command: /bin/sh -c "npm install && PORT=${NEWER_BACKEND_PORT} npm run start"
+        volumes: 
+            - ./new_backend:/usr/app
+            - new-backend:/usr/app/node_modules
+        depends_on: 
+            splunk:
+                condition: service_healthy
+            mongo:
+                condition: service_started
+    mongo:
+        image: mongo
+        container_name: mongo
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: my_super_user
+            MONGO_INITDB_ROOT_PASSWORD: my_super_password
+            MONGO_INITDB_DATABASE: Example
+        volumes: 
+            - ./mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     legacy-backend:
         image: node:14-alpine
         container_name: legacy-backend
@@ -27,7 +56,7 @@ services:
                 splunk-token: "56z7m2f9-vbw1-24de-eosu53mztzneuse2"
                 splunk-url: "https://localhost:8088"
                 splunk-insecureskipverify: "true"
-                splunk-index: legacy-backend
+                splunk-index: backend
         working_dir: /usr/app
         command: /bin/sh -c "npm install && PORT=${BACKEND_PORT} npm run server"
         volumes: 
@@ -47,8 +76,12 @@ services:
                 splunk-insecureskipverify: "true"
                 splunk-index: proxy
                 tag: fallback
+        ports:
+            - 9000:5000
         depends_on: 
             legacy-backend:
+                condition: service_started
+            new-backend:
                 condition: service_started
             splunk:
                 condition: service_healthy
@@ -107,5 +140,6 @@ services:
 volumes: 
     angular:
     legacy:
+    new-backend:
     logs-proxy:
     logs-fallback:

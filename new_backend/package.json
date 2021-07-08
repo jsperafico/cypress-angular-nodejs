@@ -2,10 +2,23 @@
   "name": "new_backend",
   "version": "1.0.0",
   "description": "This should be a replacement for 'backend' project.",
-  "main": "main.js",
+  "main": "src/api.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon",
+    "test": "jest --collect-coverage",
+    "mutatior": "stryker run"
   },
   "author": "Jonathan Pinto Sperafico",
-  "license": "GPL-3.0-only"
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.10"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "^5.2.1",
+    "@stryker-mutator/javascript-mutator": "^4.0.0",
+    "@stryker-mutator/jest-runner": "^5.2.1",
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.9"
+  }
 }

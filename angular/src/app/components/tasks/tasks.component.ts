@@ -20,13 +20,12 @@ export class TasksComponent implements OnInit {
   }
 
   add(task: Task): void {
-    task.id = Math.ceil(Math.random() * 100);
     this.service.post(task).subscribe((task) => this.tasks.push(task));
   }
 
   delete(task: Task): void {
     this.service.delete(task).subscribe(() => {
-      this.tasks = this.tasks.filter(t => t.id !== task.id)
+      this.tasks = this.tasks.filter(t => t._id !== task._id)
     });
   }
 
