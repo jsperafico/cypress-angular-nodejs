@@ -127,6 +127,7 @@ services:
             - SPLUNK_BACKEND_FALLBACK_TOKEN=${SPLUNK_BACKEND_FALLBACK_TOKEN}
         volumes:
             - ./splunk/httpinput/local:/opt/splunk/etc/apps/splunk_httpinput/local
+            - ./splunk/Splunk_TA_nginx/local:/opt/splunk/etc/apps/Splunk_TA_nginx/local
             - ./splunk/search/local:/opt/splunk/etc/apps/search/local
             - logs-proxy:/mnt/logs/proxy
             - logs-fallback:/mnt/logs/fallback
