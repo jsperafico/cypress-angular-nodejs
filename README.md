@@ -38,3 +38,7 @@ Usefull splunk queries:
 ```
 index="proxy" AND (uri_path="/api*" OR uri_path="/splunk*") | rex field=uri_path "(?<uri_path>/api|/splunk)" | stats count by uri_path,http_method
 ```
+
+```
+index="proxy" AND (uri_path="/api*" OR uri_path="/splunk*") | rex field=uri_path "(?<uri_path>/api|/splunk)" | stats count by uri_path,http_method | xyseries uri_path,http_method,count | fillnull value=0
+```
