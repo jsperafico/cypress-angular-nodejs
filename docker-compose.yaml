@@ -7,8 +7,9 @@ services:
             driver: splunk
             options: 
                 splunk-token: "jt7xay4s-aikl-nyoz-36gukwzmt1r2xlj1"
-                splunk-url: "https://localhost:8088"
+                splunk-url: "http://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-verify-connection: "false"
                 splunk-index: task-tracker
         working_dir: /usr/app
         command: /bin/sh -c "npm install && PORT=${TASK_TRACKER_PORT} npm run start"
@@ -25,8 +26,9 @@ services:
             driver: splunk
             options: 
                 splunk-token: "a5h7930q-vbw1-24de-eosu53mztzneuse3"
-                splunk-url: "https://localhost:8088"
+                splunk-url: "http://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-verify-connection: "false"
                 splunk-index: backend
         working_dir: /usr/app
         command: /bin/sh -c "npm install && PORT=${NEWER_BACKEND_PORT} npm run start"
@@ -54,8 +56,9 @@ services:
             driver: splunk
             options: 
                 splunk-token: "56z7m2f9-vbw1-24de-eosu53mztzneuse2"
-                splunk-url: "https://localhost:8088"
+                splunk-url: "http://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-verify-connection: "false"
                 splunk-index: backend
         working_dir: /usr/app
         command: /bin/sh -c "npm install && PORT=${BACKEND_PORT} npm run server"
@@ -72,8 +75,9 @@ services:
             driver: splunk
             options: 
                 splunk-token: "c1513900-cb73-4b1a-a7bd-546bb26aefc4"
-                splunk-url: "https://localhost:8088"
+                splunk-url: "http://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-verify-connection: "false"
                 splunk-index: proxy
                 tag: fallback
         ports:
@@ -96,8 +100,9 @@ services:
             driver: splunk
             options: 
                 splunk-token: "53b73db1-c549-4dd6-a718-04b630c0e30e"
-                splunk-url: "https://localhost:8088"
+                splunk-url: "http://localhost:8088"
                 splunk-insecureskipverify: "true"
+                splunk-verify-connection: "false"
                 splunk-index: proxy
                 tag: proxy
         depends_on: 
@@ -119,7 +124,6 @@ services:
         environment: 
             - SPLUNK_PASSWORD=Test1234
             - SPLUNK_START_ARGS=--accept-license
-            - SPLUNK_ROOT_ENDPOINT=/splunk
             - SPLUNK_APPS_URL=https://splunkbase.splunk.com/app/3258/release/3.0.0/download
             - SPLUNKBASE_USERNAME=${SPLUNKBASE_USERNAME}
             - SPLUNKBASE_PASSWORD=${SPLUNKBASE_PASSWORD}
@@ -132,12 +136,7 @@ services:
             - logs-proxy:/mnt/logs/proxy
             - logs-fallback:/mnt/logs/fallback
         ports: 
-            - 8088:8088
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8000"]
-            interval: 30s
-            timeout: 10s
-            retries: 10
+            - 8088:8000
 volumes: 
     angular:
     legacy:
